@@ -1,15 +1,11 @@
 #import sys, os
 import numpy as np
 import pickle
-import torch
 #from keras.src.backend.jax.nn import softmax
-from torch.utils.data import Dataset
-from torchvision import datasets
 # sys.path.append(os.pardir)
 from dataset.mnist import load_mnist
 from PIL import Image
-import neuralNetwork
-from neuralNetwork.neural_network import NeuralNetwork
+from modules.neural_network import NeuralNetwork
 
 
 def img_show(img):
