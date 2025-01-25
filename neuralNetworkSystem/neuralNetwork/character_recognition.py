@@ -15,7 +15,7 @@ def img_show(img):
 def get_data():
     (x_train, t_train), (x_test, t_test) = \
         load_mnist(flatten=True, normalize=True, one_hot_label=False)
-
+    print(x_train)
     return x_test, t_test, x_train
 
 def init_network():
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         if p == t[i]:
             accuracy_cnt += 1
 
-    print(img.shape)
+    print(img)
     print(img.shape)
     img *= 255
     # print(img)
