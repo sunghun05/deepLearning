@@ -1,3 +1,4 @@
+from wsgiref.simple_server import demo_app
 
 import numpy as np
 
@@ -8,13 +9,7 @@ class Affine:
         self.b = b
 
     def forward(self, x):
-        # print(f"x , shape : {x} \n{x.shape}")
-        # print(f"w : {self.w}")
-        # print(f"b : {self.b}")
-        #for batch
-        # batch_size = x.shape[0]
 
-        #print(f"x, w, b : {x.shape}, {self.w.shape}, {self.b.shape}")
         z = np.dot(x, self.w) + self.b
         return z
     
@@ -60,12 +55,17 @@ class softMaxCee:
 
 def softmax(x):
     x -= x.max()
-    return np.exp(x) / np.sum(np.exp(-x))
+    #batch_size = x.shape[0]
+    denom = np.sum(np.exp(x), axis=1)
+    nom = np.exp(x)
+    denom = denom.reshape(100, 1)
+    res = nom / denom
+    return res
 
 def cee(y, t):
-    if y.ndim == 1:
-        t = t.reshape(1, t.size)
-        y = y.reshape(1, y.size)
+    # if y.ndim == 1:
+    #     t = t.reshape(1, t.size)
+    #     y = y.reshape(1, y.size)
 
     # 훈련 데이터가 원-핫 벡터라면 정답 레이블의 인덱스로 반환
     if t.size == y.size:
