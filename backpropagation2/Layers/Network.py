@@ -3,7 +3,7 @@ from Layers.Layer import *
 from collections import OrderedDict
 
 class Net:
-    def __init__(self, inputSize, hiddenSize, outputSize, w_init=0.01, learningRate=0.01):
+    def __init__(self, inputSize, hiddenSize, outputSize, w_init=0.01, learningRate=0.1):
         self.params = {}
         self.params['W1'] = w_init * np.random.randn(inputSize, hiddenSize)
         self.params['b1'] = np.zeros(hiddenSize)
@@ -39,27 +39,21 @@ class Net:
     def slope_by_BPG(self, x, t):
         cp_x = x
         grad = {}
-        self.newNet['Affine1'].x = x
-        self.newNet['Affine2'].x = x
-        # self.init()
+
         #forward
-        #print(self.newNet)
-        for key in self.newNet.keys():
-            #print(key)
-            x = self.newNet[key].forward(x)
+        for val in self.newNet.values():
+            x = val.forward(x)
         self.lastLayer.forward(x, t)
 
         # refresh x
         x = cp_x
 
-        #print(f"start backward, x : {x}")
+        #backpropagation
         dx = self.lastLayer.backward()   # default dout = 1
         dx = self.newNet['Relu2'].backward(dx)
-        self.init()
-        (dx, dw1, db1) = self.newNet['Affine2'].backward(dx, x)
+        (dx, grad['W2'], grad['b2']) = self.newNet['Affine2'].backward(dx, x)
         dx = self.newNet['Relu1'].backward(dx)
-        self.init()
-        (grad['dx'], grad['dw'], grad['db']) = self.newNet['Affine1'].backward(dx, x)
+        (dx, grad['W1'], grad['b1']) = self.newNet['Affine1'].backward(dx, x)
 
         return grad
 
@@ -67,9 +61,7 @@ class Net:
     def slope_by_grad(self, x, t):
 
         grads = {}
-        #print(f"params : {self.params}")
         for key in ('W1', 'b1', 'W2', 'b2'):
-            # print(f"x preprepre : {x.shape}")
             grads[key] = self.partial_diff(x, t, self.params[key], key)
 
         return grads
