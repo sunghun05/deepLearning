@@ -1,7 +1,6 @@
 # from wsgiref.simple_server import demo_app
 import numpy as np
 import matplotlib.pyplot as plt
-from collections import Counter
 
 
 class Affine:
@@ -27,11 +26,14 @@ class Affine:
 class Relu:
     def __init__(self):
         self.mask = None
+        self.activation = None
 
     def forward(self, x):
         self.mask = (x<=0)
         out = x.copy()
         out[self.mask] = 0
+
+        self.activation = np.copy(out)
 
         return out
 
@@ -75,13 +77,3 @@ def cee(y, t):
 
     batch_size = y.shape[0]
     return -np.sum(t * np.log(y + 1e-7)) / batch_size
-
-def graph(w, b):
-    w = w.flatten()
-    b = b.flatten()
-    count_w = Counter(w)
-    count_b = Counter(b)
-    plt.bar(count_w.keys(), count_w.values(), color="blue")
-    plt.xticks(np.unique(w))  # x축 눈금을 고유값으로 설정
-    plt.show()
-

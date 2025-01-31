@@ -3,7 +3,8 @@ from Layers.Layer import *
 from collections import OrderedDict
 
 class Net:
-    def __init__(self, inputSize, hiddenSize, outputSize, w_init=0.01, learningRate=0.1):
+    # batch size increase -> learning rate decrease
+    def __init__(self, inputSize, hiddenSize, outputSize, w_init=0.01, learningRate=0.001):
         self.params = {}
         self.params['W1'] = w_init * np.random.randn(inputSize, hiddenSize)
         self.params['b1'] = np.zeros(hiddenSize)
@@ -52,8 +53,10 @@ class Net:
         dx = self.lastLayer.backward()   # default dout = 1
         dx = self.newNet['Relu2'].backward(dx)
         (dx, grad['W2'], grad['b2']) = self.newNet['Affine2'].backward(dx, x)
+        grad['b2'] = np.sum(grad['b2'], axis=0)
         dx = self.newNet['Relu1'].backward(dx)
         (dx, grad['W1'], grad['b1']) = self.newNet['Affine1'].backward(dx, x)
+        grad['b1'] = np.sum(grad['b1'], axis=0)
 
         return grad
 
