@@ -32,8 +32,8 @@ for i in range(iters_num):
     t_batch = t_train[batch_mask]
 
     # 기울기 계산
-    grad = network.numerical_gradient(x_batch, t_batch)
-    # grad = network.gradient(x_batch, t_batch)
+    #grad = network.numerical_gradient(x_batch, t_batch)
+    grad = network.gradient(x_batch, t_batch)
 
     # 매개변수 갱신
     for key in ('W1', 'b1', 'W2', 'b2'):
@@ -42,6 +42,7 @@ for i in range(iters_num):
     # 학습 경과 기록
     loss = network.loss(x_batch, t_batch)
     train_loss_list.append(loss)
+    print(f"raw loss: {loss}")
 
     # 1에폭당 정확도 계산
     if i % iter_per_epoch == 0:
